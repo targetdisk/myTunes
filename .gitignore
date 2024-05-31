@@ -1,0 +1,5 @@
+var
+.ccls-cache
+*.a
+*.o
+*.app
