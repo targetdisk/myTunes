@@ -45,7 +45,17 @@ Library *library;
 - (void) applicationWillFinishLaunching: (NSNotification *)notif
 {
   library = [[Library alloc]init];
-  [library load_library: @"~/src/myTunes/t/iTunes Music Library.xml"];
+
+  CFStringRef library_path = (CFStringRef)CFPreferencesCopyAppValue(CFSTR("library path"), kCFPreferencesCurrentApplication);
+  if (!library_path)
+  {
+    CFPreferencesSetAppValue(CFSTR("library path"), CFSTR("~/Music/myTunes"), kCFPreferencesCurrentApplication);
+    CFPreferencesAppSynchronize(kCFPreferencesCurrentApplication);
+  }
+
+  [library load_library: (NSString *)library_path];
+  CFRelease(library_path);
+
   [self createMenu];
 }
 

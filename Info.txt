@@ -1,4 +1,0 @@
-CFBundleExecutable: "myTunes"
-CFBundleName: "myTunes"
-CFBundlePackageType: 'APPL'
-CFBundleSignature:   'TDSK'

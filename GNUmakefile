@@ -2,15 +2,7 @@ APP = myTunes
 CFLAGS ?= -Wall
 FRAMEWORKS = -framework AppKit -framework Cocoa
 
-$(APP).app: $(APP).app/Contents $(APP).app/Contents/MacOS/$(APP)
-
-catalog:
-	./build.pl
-
-var/out/minivx:
-	./build.pl -i minivx
-
-minivx: var/out/minivx
+$(APP).app: $(APP).app/Contents/Info.plist $(APP).app/Contents $(APP).app/Contents/MacOS/$(APP)
 
 %.o: %.m
 	$(CC) $(CFLAGS) -c -x objective-c $< -o $@
@@ -18,16 +10,14 @@ minivx: var/out/minivx
 %.app/Contents:
 	mkdir -p "$@/"{Resources,MacOS}
 
-%.app/Contents/Info.plist: minivx %.app/Contents
-	PATH="$(PATH):var/out" minivx -Ze 'dup2(rewrite argv[1], fd 1); run argv[2..3]' \
-		"$@" modules/metamage_1/bin/make-info-plist Info.txt
+%.app/Contents/Info.plist: Info.plist %.app/Contents
+	cp -v $< $@
 
 $(APP).app/Contents/MacOS/$(APP): main.o AppDelegate.o Library.o
 	$(CC) $(CFLAGS) $(FRAMEWORKS) $? -o $@
 
 clean:
 	rm -vf $(APP) *.o
-	rm -rf *.app
-	rm -rf var/{out,build,cache}
+	rm -rf $(APP).app
 
-.PHONY: clean catalog minivx
+.PHONY: clean
