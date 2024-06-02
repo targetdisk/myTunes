@@ -22,7 +22,7 @@ minivx: var/out/minivx
 	PATH="$(PATH):var/out" minivx -Ze 'dup2(rewrite argv[1], fd 1); run argv[2..3]' \
 		"$@" modules/metamage_1/bin/make-info-plist Info.txt
 
-$(APP).app/Contents/MacOS/$(APP): main.o AppDelegate.o
+$(APP).app/Contents/MacOS/$(APP): main.o AppDelegate.o Library.o
 	$(CC) $(CFLAGS) $(FRAMEWORKS) $? -o $@
 
 clean:

@@ -1,10 +1,12 @@
 #import <AppKit/AppKit.h>
 
+#import "Library.h"
 #import "AppDelegate.h"
 
 @implementation AppController
 NSApplication *_app;
 NSMenu *_menu;
+Library *library;
 
 - (id)initWithNSApp:(NSApplication *)app
 {
@@ -42,6 +44,8 @@ NSMenu *_menu;
 
 - (void) applicationWillFinishLaunching: (NSNotification *)notif
 {
+  library = [[Library alloc]init];
+  [library load_library: @"~/src/myTunes/t/iTunes Music Library.xml"];
   [self createMenu];
 }
 
