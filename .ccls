@@ -1,0 +1,6 @@
+clang
+-Wall
+-framework
+AppKit
+-framework
+Cocoa
