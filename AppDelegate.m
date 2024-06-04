@@ -25,6 +25,7 @@ Library *library;
   NSMenuItem *appMenuItem = [[NSMenuItem alloc] init];
   [menubar addItem:appMenuItem];
   NSMenu *appMenu = [[NSMenu alloc] init];
+
   [appMenu addItem: [[NSMenuItem alloc]
      initWithTitle: [NSString stringWithFormat:@"About %@", [[NSProcessInfo processInfo] processName]]
                      action:@selector(orderFrontStandardAboutPanel:)
@@ -46,14 +47,43 @@ Library *library;
 {
   library = [[Library alloc]init];
 
-  CFStringRef library_path = (CFStringRef)CFPreferencesCopyAppValue(CFSTR("library path"), kCFPreferencesCurrentApplication);
+  CFStringRef library_path = (CFStringRef)CFPreferencesCopyAppValue(
+      CFSTR("library path"), kCFPreferencesCurrentApplication);
+
   if (!library_path)
   {
-    CFPreferencesSetAppValue(CFSTR("library path"), CFSTR("~/Music/myTunes"), kCFPreferencesCurrentApplication);
+    NSString *defaultPath = [NSString stringWithFormat:@"%@/Music/myTunes", NSHomeDirectory()];
+    CFPreferencesSetAppValue(CFSTR("library path"),
+        (CFStringRef)defaultPath,
+        kCFPreferencesCurrentApplication);
+
     CFPreferencesAppSynchronize(kCFPreferencesCurrentApplication);
   }
 
-  [library load_library: (NSString *)library_path];
+  if (![library load_library: (NSString *)library_path])
+  {
+    NSError *error;
+
+    if (![[NSFileManager defaultManager]
+        createDirectoryAtPath:(NSString *)library_path
+  withIntermediateDirectories:YES
+                   attributes:nil
+                        error:&error
+         ])
+    {
+      NSAlert *alert = [[NSAlert alloc] init];
+
+      [alert setMessageText:[error localizedDescription]];
+      [alert setInformativeText:[error localizedFailureReason]];
+      [alert addButtonWithTitle:@"Quit"];
+      [alert setAlertStyle:NSCriticalAlertStyle];
+
+      [alert runModal];
+
+      [NSApp terminate:self];
+    }
+  }
+
   CFRelease(library_path);
 
   [self createMenu];
