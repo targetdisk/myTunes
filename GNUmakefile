@@ -1,4 +1,6 @@
 APP = myTunes
+CFBUNDLEID = org.targetdisk.mytunes
+PREFS = $(HOME)/Library/Preferences/$(CFBUNDLEID).plist
 CFLAGS ?= -Wall
 FRAMEWORKS = -framework AppKit -framework Cocoa
 
@@ -15,6 +17,12 @@ $(APP).app: $(APP).app/Contents/Info.plist $(APP).app/Contents $(APP).app/Conten
 
 $(APP).app/Contents/MacOS/$(APP): main.o AppDelegate.o Library.o
 	$(CC) $(CFLAGS) $(FRAMEWORKS) $? -o $@
+
+showprefs:
+	@plistutil -i $(PREFS)  -o -
+
+superclean: clean
+	rm -vf $(PREFS)
 
 clean:
 	rm -vf $(APP) *.o
