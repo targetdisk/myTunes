@@ -15,7 +15,7 @@ $(APP).app: $(APP).app/Contents/Info.plist $(APP).app/Contents $(APP).app/Conten
 %.app/Contents/Info.plist: Info.plist %.app/Contents
 	cp -v $< $@
 
-$(APP).app/Contents/MacOS/$(APP): main.o AppDelegate.o Library.o
+$(APP).app/Contents/MacOS/$(APP): main.o AppDelegate.o Library.o Menu.o
 	$(CC) $(CFLAGS) $(FRAMEWORKS) $? -o $@
 
 showprefs:
