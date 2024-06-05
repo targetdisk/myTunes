@@ -1,3 +1,6 @@
+.DS_Store
+.venv
+Session.vim
 var
 .ccls-cache
 *.a
